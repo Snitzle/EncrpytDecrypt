@@ -1,36 +1,38 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Scanner s = new Scanner(System.in);
+        String mode = "";
+        String message = "";
+        int shift = 0;
 
-        // Mode Type
-        String mode = s.nextLine().toLowerCase();
-        // System.out.println(mode);
 
-        // input message
-        char[] convert = s.nextLine().toCharArray();
-        // System.out.println(convert);
+        for ( int i = 0; i < args.length; i++) {
 
-        // Shift amount Key
-        int shift = s.nextInt();
-        // System.out.println(shift);
+            switch( args[i] ) {
+                case "-mode":
+                    mode = args[i + 1];
+                    break;
+                case "-key":
+                    shift = Integer.parseInt( args[i + 1] );
+                    break;
+                case "-data":
+                    message =  args[i + 1];
+                    break;
+            }
+
+        }
+
+        char[] convert = message.toCharArray();
 
 
         if ( mode.equals("dec") ) {
-
-            // Decrpyt Method
-            // System.out.println("Dec Hit");
             System.out.println(dec(convert, shift));
-
         } else if ( mode.equals("enc") ) {
-
-            // Encrytp Method
-            // System.out.println("Enc Hit");
             System.out.println(enc(convert, shift));
-
         }
 
     }
