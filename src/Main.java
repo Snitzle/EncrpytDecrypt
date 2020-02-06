@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -5,9 +9,28 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String mode = "";
+        System.out.println(Arrays.toString(args));
+
+        // Defaults
+        String mode = "enc";
         String message = "";
-        int shift = 0;
+        int key = 0;
+        String in = "";
+        String out = "";
+
+        File fileIn;
+        File fileOut;
+
+        /**
+         * If there is no -mode, default to enc.
+         * If there is no -key, default to 0
+         * If there is no -data AND no -in, default to an empty string
+         * If there is BOTH -data AND -in, default to -data
+         * If there is no -out, default to printing to terminal
+         *
+         * If exceptions are thrown, display a message containing "Error"
+         */
+
 
 
         for ( int i = 0; i < args.length; i++) {
@@ -17,94 +40,69 @@ public class Main {
                     mode = args[i + 1];
                     break;
                 case "-key":
-                    shift = Integer.parseInt( args[i + 1] );
+                    key = Integer.parseInt( args[i + 1] );
                     break;
                 case "-data":
                     message =  args[i + 1];
                     break;
+                case "-in":
+                    in = args[i + 1];
+                case "-out":
+                    out = args[i + 1];
             }
 
         }
 
-        char[] convert = message.toCharArray();
 
+        // set message to contents of file
+        if ( message.equals("") && !in.equals("") ) {
 
-        if ( mode.equals("dec") ) {
-            System.out.println(dec(convert, shift));
-        } else if ( mode.equals("enc") ) {
-            System.out.println(enc(convert, shift));
-        }
+            fileIn = new File(in);
 
-    }
-
-
-
-
-
-    // return types didn't match
-    static char[] enc( char[] toConvert, int shift) {
-
-        int beg = 32; // ASCII lowercase a
-        int limit = 126; // ASCII lowercase z
-
-        char[] message = new char[toConvert.length];
-
-        for ( int i = 0; i < toConvert.length; i++) {
-
-            int letter = toConvert[i];
-
-            // being shifted by its own distance from the end of the alphabet
-            int shiftUp = letter + shift;
-
-            if ( shiftUp > limit ) {
-                int diff = shiftUp - limit;
-                shiftUp = ( beg - 1 ) + diff;
+            try {
+                Scanner s = new Scanner(fileIn);
+                message = s.nextLine();
+                s.close();
+            } catch ( FileNotFoundException e ) {
+                System.out.println("Error: " + e.getClass().getSimpleName());
             }
 
-            message[i] = (char) shiftUp;
-
-
         }
 
-        return message;
 
-    }
+        System.out.println(mode);
+        System.out.println(message);
+        System.out.println(in);
+        System.out.println(out);
 
 
 
-    // rewrite this to decode. Invert the logic
-    static char[] dec( char[] toConvert, int shift) {
 
-        int beg = 32; // ASCII lowercase a
-        int limit = 126; // ASCII lowercase z
+        encDec tool = new encDec();
 
-        char[] message = new char[toConvert.length];
+        if ( out.equals("") ) {
 
-        for ( int i = 0; i < toConvert.length; i++) {
+            System.out.println( tool.convert( mode, message, key ) );
 
-            int letter = toConvert[i];
+        } else {
 
-            // being shifted by its own distance from the end of the alphabet
-            int shiftDown = letter - shift;
+            // Write to a file
+            fileOut = new File(out);
+            String write = tool.convert( mode, message, key );
 
-            if ( shiftDown < beg ) {
-                int diff = shiftDown + limit;
-
-                shiftDown = ( limit + 1 ) - diff;
+            try {
+                FileWriter filewrite = new FileWriter(fileOut);
+                filewrite.write(write);
+                filewrite.close();
+            } catch (IOException e) {
+                System.out.println("Error: " + e.getClass().getSimpleName());
             }
 
-            message[i] = (char) shiftDown;
+
 
         }
 
 
 
-        return message;
-
     }
-
-
-
-
-
 }
