@@ -9,7 +9,17 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println(Arrays.toString(args));
+        /**
+         * Task Prerequisites:
+         *
+         * If there is no -mode, default to enc.
+         * If there is no -key, default to 0
+         * If there is no -data AND no -in, default to an empty string
+         * If there is BOTH -data AND -in, default to -data
+         * If there is no -out, default to printing to terminal
+         *
+         * If exceptions are thrown, display a message containing "Error"
+         */
 
         // Defaults
         String mode = "enc";
@@ -20,18 +30,6 @@ public class Main {
 
         File fileIn;
         File fileOut;
-
-        /**
-         * If there is no -mode, default to enc.
-         * If there is no -key, default to 0
-         * If there is no -data AND no -in, default to an empty string
-         * If there is BOTH -data AND -in, default to -data
-         * If there is no -out, default to printing to terminal
-         *
-         * If exceptions are thrown, display a message containing "Error"
-         */
-
-
 
         for ( int i = 0; i < args.length; i++) {
 
@@ -69,15 +67,6 @@ public class Main {
 
         }
 
-
-        System.out.println(mode);
-        System.out.println(message);
-        System.out.println(in);
-        System.out.println(out);
-
-
-
-
         encDec tool = new encDec();
 
         if ( out.equals("") ) {
@@ -97,8 +86,6 @@ public class Main {
             } catch (IOException e) {
                 System.out.println("Error: " + e.getClass().getSimpleName());
             }
-
-
 
         }
 
